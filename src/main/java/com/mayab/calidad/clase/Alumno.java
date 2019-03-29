@@ -64,4 +64,8 @@ public class Alumno {
     public void setId(Integer id) {
         this.id = id;
     }
+    public String toString(){
+        return this.id.toString()+this.name+this.lastName+this.age.toString()+this.email;
+        
+    }
 }

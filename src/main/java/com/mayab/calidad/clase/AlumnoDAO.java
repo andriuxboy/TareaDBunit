@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 /**
@@ -36,9 +37,7 @@ public class AlumnoDAO {
 
 		try {
 			Class.forName("org.hsqldb.jdbc.JDBCDriver");
-			System.out.println("HSQLDB JDBCDriver Loaded");
 			con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/Alumnos", "SA", "");
-			System.out.println("HSQLDB Connection Created");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -58,48 +57,39 @@ public class AlumnoDAO {
     public void delete(Alumno alumno) throws SQLException{
         statement = connection.createStatement();
         query = "DELETE FROM \"PUBLIC\".\"ALUMNOS\"\n " +
-        " WHERE ID="+alumno.getId().toString();        
+        " WHERE ID="+alumno.getId().toString();
+        statement.executeUpdate(query);        
     }
-    public void updateEmail(Alumno alumno, String email1){
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE \"PUBLIC\".\"ALUMNOS\" SET \"EMAIL\" = ?  WHERE ID = ?"
-                            + " AND EMAIL = ? AND NAME = ? AND LASTNAME = ? AND AGE = ?");
-            ps.setString(1, email1);
-            ps.setInt(2, alumno.getId());
-            ps.setString(3, alumno.getEmail());
-            ps.setString(4, alumno.getName());
-            ps.setString(5, alumno.getLastName());
-            ps.setInt(6, alumno.getAge());
-            connection.close();
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }        
+    public void updateEmail(Alumno alumno, String email) throws SQLException {
+        statement = connection.createStatement();
+        query = "UPDATE ALUMNOS SET EMAIL = '"+email+"' WHERE id = "+alumno.getId();
+        statement.executeUpdate(query);    
     }
 
-    public void readAlumno(Alumno alumno){
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "select id, name, lastname, age, email from ALUMNOS WHERE ID = ? "
-                            + "AND EMAIL = ? AND NAME = ? AND LASTNAME = ? AND AGE = ?");
-            ps.setInt(1, alumno.getId());
-            ps.setString(2, alumno.getEmail());
-            ps.setString(3, alumno.getName());
-            ps.setString(4, alumno.getLastName());
-            ps.setInt(5, alumno.getAge());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                System.out.println("ID = " + rs.getInt("id") + 
-                        ", Name = " + rs.getString("name") + ", LastName = "
-                        + rs.getString("lastName") + ", Age "+rs.getString("age")+
-                        ", Email = "+rs.getString("email"));
-			}
-            rs.close();
-            connection.close();
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
+public Alumno readAlumno(Alumno alumno) throws SQLException{
+    ArrayList array;
+    array = new ArrayList();
+    try {
+        PreparedStatement ps = connection.prepareStatement(
+                "select id, name, lastname, age, email from ALUMNOS WHERE ID= ?");
+        ps.setInt(1, alumno.getId());
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            array.add(0, rs.getString("id"));
+            array.add(1, rs.getString("name"));
+            array.add(2, rs.getString("lastname"));
+            array.add(3, rs.getInt("age"));
+            array.add(4, rs.getString("email"));
+                    }
+        rs.close();
+        connection.close();
+    } catch (SQLException e1) {
+        e1.printStackTrace();
     }
+    Alumno temp;
+//    temp = new Alumno(array.get(0), array.get(1), array.get(2), array.get(3), array.get(4));
+    return null;
+}
 
 
     public void readAll(){
@@ -120,12 +110,7 @@ public class AlumnoDAO {
         }
     }
     
-    
-    
-    
-    
-    public void updateEmail(Alumno alumno){
-    }    
+   
     
     
     

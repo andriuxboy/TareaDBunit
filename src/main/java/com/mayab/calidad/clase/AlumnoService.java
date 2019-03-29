@@ -25,14 +25,16 @@ public class AlumnoService {
     public void deleteAlumno(Alumno a) throws SQLException{
         dao.delete(a);   
     }
-    public void updateEmail(Alumno a, String email){
+    public void updateEmail(Alumno a, String email) throws SQLException{
         dao.updateEmail(a, email);
     }
     public void readAll(){
         dao.readAll();
     }
-    public void readAlumno(Alumno a){
-        dao.readAlumno(a);
+    public Alumno readAlumno(Alumno a) throws SQLException{
+        Alumno b = dao.readAlumno(a);
+        System.out.println(b.toString());
+        return b;
     }    
     
     
